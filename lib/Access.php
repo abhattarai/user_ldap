@@ -958,7 +958,19 @@ class Access implements IUserTools {
 	 * @throws \OC\ServerNotAvailableException
 	 */
 	public function searchUsers($filter, $attr = null, $limit = null, $offset = null) {
-		return $this->search($filter, $this->connection->ldapBaseUsers, $attr, $limit, $offset);
+		$entries = [];
+		$bases = $this->connection->ldapBaseUsers;
+		// disable parallel paginated search on subsequent pages
+		if ($offset !== null && $offset > 0) {
+			foreach ($bases as $base) {
+				foreach ($this->search($filter, [$base], $attr, $limit, $offset) as $entry) {
+					$entries[] = $entry;
+				}
+			}
+		} else {
+			$entries = $this->search($filter, $bases, $attr, $limit, $offset);
+		}
+		return $entries;
 	}
 
 	/**
@@ -970,7 +982,13 @@ class Access implements IUserTools {
 	 * @throws \OC\ServerNotAvailableException
 	 */
 	public function countUsers($filter, $attr = ['dn'], $limit = null, $offset = null) {
-		return $this->count($filter, $this->connection->ldapBaseUsers, $attr, $limit, $offset);
+		$entries = 0;
+		$bases = $this->connection->ldapBaseUsers;
+		foreach ($bases as $base) {
+			$e = $this->count($filter, [$base], $attr, $limit, $offset);
+			$entries += $e;
+		}
+		return $entries;
 	}
 
 	/**
@@ -986,7 +1004,19 @@ class Access implements IUserTools {
 	 * @throws \OC\ServerNotAvailableException
 	 */
 	public function searchGroups($filter, $attr = null, $limit = null, $offset = null) {
-		return $this->search($filter, $this->connection->ldapBaseGroups, $attr, $limit, $offset);
+		$entries = [];
+		$bases = $this->connection->ldapBaseGroups;
+		// disable parallel paginated search on subsequent pages
+		if ($offset !== null && $offset > 0) {
+			foreach ($bases as $base) {
+				foreach ($this->search($filter, [$base], $attr, $limit, $offset) as $entry) {
+					$entries[] = $entry;
+				}
+			}
+		} else {
+			$entries = $this->search($filter, $bases, $attr, $limit, $offset);
+		}
+		return $entries;
 	}
 
 	/**
@@ -1000,7 +1030,13 @@ class Access implements IUserTools {
 	 * @throws \OC\ServerNotAvailableException
 	 */
 	public function countGroups($filter, $attr = ['dn'], $limit = null, $offset = null) {
-		return $this->count($filter, $this->connection->ldapBaseGroups, $attr, $limit, $offset);
+		$entries = 0;
+		$bases = $this->connection->ldapBaseGroups;
+		foreach ($bases as $base) {
+			$e = $this->count($filter, [$base], $attr, $limit, $offset);
+			$entries += $e;
+		}
+		return $entries;
 	}
 
 	/**
@@ -1012,7 +1048,13 @@ class Access implements IUserTools {
 	 * @throws \OC\ServerNotAvailableException
 	 */
 	public function countObjects($limit = null, $offset = null) {
-		return $this->count('objectclass=*', $this->connection->ldapBase, ['dn'], $limit, $offset);
+		$entries = 0;
+		$bases = $this->connection->ldapBase;
+		foreach ($bases as $base) {
+			$e = $this->count('objectclass=*', [$base], ['dn'], $limit, $offset);
+			$entries += $e;
+		}
+		return $entries;
 	}
 
 	/**
