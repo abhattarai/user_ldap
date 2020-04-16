@@ -62,8 +62,8 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
-	 * @param LDAP $result
+	 * @param LDAP|resource $link
+	 * @param LDAP|resource $result
 	 * @param string $cookie
 	 * @param int $estimated $cookie
 	 * @return bool|LDAP
@@ -78,7 +78,7 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
+	 * @param LDAP|resource $link
 	 * @param int $pageSize
 	 * @param bool $isCritical
 	 * @param string $cookie
@@ -90,8 +90,8 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
-	 * @param LDAP $result
+	 * @param LDAP|resource $link
+	 * @param LDAP|resource $result
 	 * @return mixed
 	 */
 	public function countEntries($link, $result) {
@@ -99,7 +99,7 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
+	 * @param LDAP|resource $link
 	 * @return mixed|string
 	 */
 	public function errno($link) {
@@ -107,7 +107,7 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
+	 * @param LDAP|resource $link
 	 * @return int|mixed
 	 */
 	public function error($link) {
@@ -131,7 +131,7 @@ class LDAP implements ILDAPWrapper {
 	/**
 	 * Splits DN into its component parts
 	 * @param string $dn
-	 * @param int @withAttrib
+	 * @param int $withAttrib
 	 * @return array|false
 	 * @link http://www.php.net/manual/en/function.ldap-explode-dn.php
 	 */
@@ -140,8 +140,8 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
-	 * @param LDAP $result
+	 * @param LDAP|resource $link
+	 * @param LDAP|resource $result
 	 * @return mixed
 	 */
 	public function firstEntry($link, $result) {
@@ -149,8 +149,8 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
-	 * @param LDAP $result
+	 * @param LDAP|resource $link
+	 * @param LDAP|resource $result
 	 * @return array|mixed
 	 */
 	public function getAttributes($link, $result) {
@@ -158,8 +158,8 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
-	 * @param LDAP $result
+	 * @param LDAP|resource $link
+	 * @param LDAP|resource $result
 	 * @return mixed|string
 	 */
 	public function getDN($link, $result) {
@@ -167,8 +167,8 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
-	 * @param LDAP $result
+	 * @param LDAP|resource $link
+	 * @param LDAP|resource $result
 	 * @return array|mixed
 	 */
 	public function getEntries($link, $result) {
@@ -176,7 +176,7 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
+	 * @param LDAP|resource $link
 	 * @param resource $result
 	 * @return mixed
 	 */
@@ -185,7 +185,7 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
+	 * @param LDAP|resource $link
 	 * @param string $baseDN
 	 * @param string $filter
 	 * @param array $attr
@@ -196,7 +196,7 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
+	 * @param LDAP|resource $link
 	 * @param string $baseDN
 	 * @param string $filter
 	 * @param array $attr
@@ -209,7 +209,7 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
+	 * @param LDAP|resource $link
 	 * @param string $option
 	 * @param int $value
 	 * @return bool|mixed
@@ -219,7 +219,7 @@ class LDAP implements ILDAPWrapper {
 	}
 
 	/**
-	 * @param LDAP $link
+	 * @param LDAP|resource $link
 	 * @return mixed|true
 	 */
 	public function startTls($link) {

@@ -68,10 +68,10 @@ class Manager {
 	/** @var ILogger */
 	protected $logger;
 
-	/** @param \OCP\IAvatarManager */
+	/** @param \OCP\IAvatarManager $avatarManager */
 	protected $avatarManager;
 
-	/** @param IUserManager */
+	/** @param IUserManager $userManager */
 	protected $userManager;
 
 	/**
@@ -110,9 +110,9 @@ class Manager {
 	/**
 	 * @brief binds manager to an instance of IUserTools (implemented by
 	 * Access). It needs to be assigned first before the manager can be used.
-	 * @param IUserTools
+	 * @param Access $access
 	 */
-	public function setLdapAccess(IUserTools $access) {
+	public function setLdapAccess(Access $access) {
 		$this->access = $access;
 	}
 
@@ -140,21 +140,22 @@ class Manager {
 	 * @return string[]
 	 */
 	public function getAttributes($minimal = false) {
+		$ldapConfig = $this->getConnection()->getConfiguration();
 		$attributes = ['dn' => true, 'uid' => true, 'samaccountname' => true,
-			$this->getConnection()->ldapQuotaAttribute => true,
-			$this->getConnection()->ldapEmailAttribute => true,
+			$ldapConfig['ldapQuotaAttribute'] => true,
+			$ldapConfig['ldapEmailAttribute'] => true,
 			$this->getConnection()->ldapUserDisplayName => true,
 			$this->getConnection()->ldapUserDisplayName2 => true,
-			$this->getConnection()->ldapExpertUsernameAttr => true,
+			$ldapConfig['ldapExpertUsernameAttr'] => true,
 		];
-		if ($this->getConnection()->ldapUserName !== null) {
-			$attributes[$this->getConnection()->ldapUserName] = true;
+		if ($this->getConnection()->getConfiguration()['ldapUserName'] !== null) {
+			$attributes[$ldapConfig['ldapUserName']] = true;
 		}
-		$homeRule = $this->getConnection()->homeFolderNamingRule;
+		$homeRule = $ldapConfig['homeFolderNamingRule'];
 		if (\strpos($homeRule, 'attr:') === 0) {
 			$attributes[\substr($homeRule, \strlen('attr:'))] = true;
 		}
-		$searchAttributes = $this->getConnection()->ldapAttributesForUserSearch;
+		$searchAttributes = $ldapConfig['ldapAttributesForUserSearch'];
 		if ($searchAttributes === '' || $searchAttributes === null) { //FIXME empty multiline initializes as '', make it []
 			$searchAttributes = [];
 		}
@@ -163,7 +164,7 @@ class Manager {
 				$attributes[$attr] = true;
 			}
 		}
-		$uuidAttribute = $this->getConnection()->ldapUuidUserAttribute;
+		$uuidAttribute = $ldapConfig['ldapUuidUserAttribute'];
 		if ($uuidAttribute !== 'auto' && $uuidAttribute !== '') {
 			// if uuidAttribute is specified use that
 			$attributes[$uuidAttribute] = true;
@@ -190,7 +191,7 @@ class Manager {
 	/**
 	 * Gets an UserEntry from the LDAP server from a distinguished name
 	 *
-	 * @param $dn
+	 * @param string $dn
 	 * @return UserEntry
 	 * @throws \OutOfBoundsException
 	 * @throws \InvalidArgumentException
@@ -241,8 +242,8 @@ class Manager {
 	}
 
 	/**
-	 * @param $uid
-	 * @return UserEntry
+	 * @param int|string $uid
+	 * @return UserEntry|null
 	 */
 	public function getCachedEntry($uid) {
 		if (isset($this->usersByUid[$uid])) {
@@ -446,7 +447,7 @@ class Manager {
 	 */
 	public function markLogin($uid) {
 		$this->ocConfig->setUserValue(
-			$uid, 'user_ldap', self::USER_PREFKEY_FIRSTLOGIN, 1);
+			$uid, 'user_ldap', self::USER_PREFKEY_FIRSTLOGIN, '1');
 	}
 
 	/**
